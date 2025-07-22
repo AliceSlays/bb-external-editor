@@ -127,7 +127,7 @@ export class HackExecutionManager {
       target.expected_end = Math.max(...tthgw) + Date.now() + 1200
       return true
     } else {
-      console.log(`no room for more`)
+      //console.log(`no room for more`)
       return false
     }
   }

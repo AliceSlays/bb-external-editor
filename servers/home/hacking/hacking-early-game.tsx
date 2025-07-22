@@ -24,13 +24,13 @@ export async function main(ns: NS) {
   const deployManager = new ScriptDeployer(ns, [{ hostname: 'home', rammodifier: 0.8 }], { purchased: true, hacked: true })
   // Infinite loop that continously hacks/grows/weakens the target server
   while (true) {
+    var waittime
     deployManager.updateServerList(ns);
     console.log(ns.getServerSecurityLevel(target), ns.formatNumber(ns.getServerMoneyAvailable(target), 3, 1000))
     if (ns.getServerSecurityLevel(target) > securityThresh) {
       // If the server's security level is above our threshold, weaken it
       deployManager.deployScriptBatch(ns, { fileName: HackActionFiles['W'], args: [target] }, 99999, true, true)
-      var waittime = ns.getWeakenTime(target)
-      await ns.sleep(waittime + 200)
+       waittime = ns.getWeakenTime(target)
     } else if (ns.getServerMoneyAvailable(target) < moneyThresh) {
       // If the server's money is less than our threshold, grow it
       var threads = deployManager.can_deploy_threads(ns, { fileName: HackActionFiles['G'], args: [target] }, 99999)
@@ -39,8 +39,7 @@ export async function main(ns: NS) {
       var c1 = deployManager.deployScriptBatch(ns, { fileName: HackActionFiles['G'], args: [target] }, g_threads, true, true)
       var c2 = deployManager.deployScriptBatch(ns, { fileName: HackActionFiles['W'], args: [target] }, w_threads, true, true)
       console.log('wg',threads,g_threads,w_threads,c1,c2)
-      var waittime = ns.getWeakenTime(target)
-      await ns.sleep(waittime + 200)
+       waittime = ns.getWeakenTime(target)
     } else {
       var threads = deployManager.can_deploy_threads(ns, { fileName: HackActionFiles['H'], args: [target] }, 99999)
       var w_threads = Math.ceil(threads * HackActionDifficulty['H'] / -HackActionDifficulty['W'])
@@ -48,9 +47,11 @@ export async function main(ns: NS) {
       deployManager.deployScriptBatch(ns, { fileName: HackActionFiles['H'], args: [target] }, h_threads, true, true)
       deployManager.deployScriptBatch(ns, { fileName: HackActionFiles['W'], args: [target] }, w_threads, true, true)
       // Otherwise, hack it
-      var waittime = ns.getWeakenTime(target)
-      await ns.sleep(waittime + 200)
+      waittime = ns.getWeakenTime(target)
     }
+    waittime = Math.ceil(waittime)
+    console.log(waittime)
+      await ns.sleep(waittime + 200)
   }
 
 }
