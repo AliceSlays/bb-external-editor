@@ -15,6 +15,7 @@ const createContext = async () => await context({
       port: 12525,
       types: 'NetscriptDefinitions.d.ts',
       mirror: {
+        'servers': ['home']
       },
       distribute: {
       },
@@ -23,7 +24,7 @@ const createContext = async () => await context({
   bundle: true,
   format: 'esm',
   platform: 'browser',
-  logLevel: 'debug',
+  logLevel: 'info',
 });
 
 const ctx = await createContext();
