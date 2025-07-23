@@ -1,6 +1,6 @@
 import { fetchServers } from "../common/network-info"
 import { IServerInfo } from "../common/common-types"
-import { processServer, any_changes } from "../common/network-info-demon"
+import { processServer, any_changes } from "../demons/network-info-demon"
 
 
 export async function main(ns: NS) {

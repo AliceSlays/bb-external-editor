@@ -1,6 +1,11 @@
-import { fetchServers } from "../common/network-info"
-import { IServerInfo } from "../common/common-types"
 
+import { IServerInfo,EPortNumber } from "../common/common-types"
+
+export function fetchServers(ns:NS){
+    let servers = new Set<string>(['home'])
+    servers.forEach(s => ns.scan(s).forEach(d=>servers.add(d)))
+    return Array.from(servers)
+}
 
 export function processServer(ns: NS, target: string): IServerInfo {
     let server = ns.getServer(target)
@@ -28,7 +33,7 @@ export function any_changes(prev: IServerInfo[], current: IServerInfo[]): boolea
     }
 
     prev.forEach((p, i) => {
-        if (!(p.nuked && current[i].nuked)) {
+        if (has_changed(p,current[i])) {
             return true
         }
     })
@@ -40,7 +45,7 @@ export async function main(ns: NS) {
     let servers = fetchServers(ns)
     let processed = servers.map(s => { return processServer(ns, s) })
     let current = processed;
-    let port = ns.getPortHandle(11111)
+    let port = ns.getPortHandle(EPortNumber['N'])
     port.write(current)
     console.log('initial state',port.peek())
     while (true) {

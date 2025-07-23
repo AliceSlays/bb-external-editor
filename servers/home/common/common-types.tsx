@@ -8,3 +8,8 @@ export interface IServerInfo{
     minSecurity:number|undefined,
 
 }
+
+export enum EPortNumber{
+    N = 11111       // network info crawler
+
+}

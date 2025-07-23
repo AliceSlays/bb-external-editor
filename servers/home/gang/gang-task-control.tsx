@@ -33,12 +33,15 @@ function doTaskTerrorism(ns: NS) {
 function doTaskIA(ns: NS) {
   doTaskAll(ns, ns.gang.getMemberNames(), 'Traffick Illegal Arms')
 }
+function doTaskHT(ns: NS) {
+  doTaskAll(ns, ns.gang.getMemberNames(), 'Human Trafficking')
+}
 function doTaskTW(ns: NS) {
   doTaskAll(ns, ns.gang.getMemberNames(), 'Territory Warfare')
 }
-function ascendAll(ns:NS){
+function ascendAll(ns: NS) {
   var names = ns.gang.getMemberNames()
-  names.forEach(name=>{ns.gang.ascendMember(name)})
+  names.forEach(name => { ns.gang.ascendMember(name) })
 }
 export async function main(ns: NS) {
 
@@ -48,6 +51,7 @@ export async function main(ns: NS) {
       <button onClick={() => { doTaskCombatTraining(ns) }}>TC</button>
       <button onClick={() => { doTaskTerrorism(ns) }}>T</button>
       <button onClick={() => { doTaskIA(ns) }}>IA</button>
+      <button onClick={() => { doTaskHT(ns) }}>HT</button>
       <button onClick={() => { doTaskTW(ns) }}>TW</button>
       <button onClick={() => { ascendAll(ns) }}>AA</button>
     </div>

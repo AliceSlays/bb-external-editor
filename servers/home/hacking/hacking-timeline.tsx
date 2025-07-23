@@ -118,10 +118,10 @@ export class HackExecutionManager {
         act = this.pattern[index]
         if ((this.is_optimal(ns, target.hostname) || act != HackActionType['H'])) {
           if (this.deploy_action(ns, target.hostname, act, threads[index], extra_args[index])) {
-            console.log(target.hostname, act, threads[index], formatTime(tthgw[index]), ns.formatNumber(ns.getServerMaxMoney(target.hostname), 3, 1000))
+            ns.printf(target.hostname, act, threads[index], formatTime(tthgw[index]), ns.formatNumber(ns.getServerMaxMoney(target.hostname), 3, 1000))
           }
         } else {
-          console.log(target.hostname, act, ns.getServerSecurityLevel(target.hostname), ns.getServerMinSecurityLevel(target.hostname), ns.formatNumber(ns.getServerMoneyAvailable(target.hostname), 3, 1000), ns.formatNumber(ns.getServerMaxMoney(target.hostname), 3, 1000))
+          ns.printf(target.hostname, act, ns.getServerSecurityLevel(target.hostname), ns.getServerMinSecurityLevel(target.hostname), ns.formatNumber(ns.getServerMoneyAvailable(target.hostname), 3, 1000), ns.formatNumber(ns.getServerMaxMoney(target.hostname), 3, 1000))
         }
       })
       target.expected_end = Math.max(...tthgw) + Date.now() + 1200
