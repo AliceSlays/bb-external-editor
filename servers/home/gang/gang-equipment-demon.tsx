@@ -19,7 +19,7 @@ export async function main(ns: NS) {
       var owned_augs = info.augmentations
       var owned_upgrades = owned_eq.concat(owned_augs)
       var purchased: string[] = [];
-      upgrades.forEach(up => {
+      equipment.forEach(up => {
         if (can_afford(ns, up) && !owned_upgrades.includes(up)) {
           if (ns.gang.purchaseEquipment(name, up)) {
             purchased.push(up)

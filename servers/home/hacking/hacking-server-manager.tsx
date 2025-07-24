@@ -100,6 +100,7 @@ export class ScriptDeployer {
 
 
 export async function main(ns: NS) {
+  /*
   var scriptdeployer = new ScriptDeployer(ns, [{ hostname: 'pserv-24', rammodifier: 1 }, { hostname: 'pserv-23', rammodifier: 1 },
   { hostname: 'pserv-22', rammodifier: 1 }, { hostname: 'pserv-21', rammodifier: 1 },
   { hostname: 'pserv-20', rammodifier: 1 }, { hostname: 'pserv-19', rammodifier: 1 },
@@ -111,6 +112,8 @@ export async function main(ns: NS) {
   { hostname: 'pserv-8', rammodifier: 1 }, { hostname: 'pserv-7', rammodifier: 1 },
     // {hostname:'pserv-6',rammodifier:1},{hostname:'pserv-5',rammodifier:1}
   ], { hacked: true })
+  */
+  var scriptdeployer = new ScriptDeployer(ns, [], { purchased:true, home:true, hacked: true })
   var filename = 'hacking/hacking-server-share.tsx';
   var count = scriptdeployer.deployScriptBatch(ns, { fileName: filename, args: [] }, 9999999, false)
   console.log(`Deployed ${count} share threads!`)

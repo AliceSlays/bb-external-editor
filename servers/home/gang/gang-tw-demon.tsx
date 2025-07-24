@@ -75,6 +75,7 @@ export async function main(ns: NS) {
     await doTW(ns, tick_duration)
     let timer = 20000
     let next_tick_at = Date.now() + timer
+    console.log(timer) 
     while (true) {
 
         if (next_tick_at-tick_duration < Date.now() + tick_duration) {
