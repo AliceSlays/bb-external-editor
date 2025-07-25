@@ -56,8 +56,8 @@ export async function main(ns:NS){
     ns.corporation.upgradeWarehouse
 
         // info
-    ns.corporation.getConstants()
-    ns.corporation.getDivision('')
+    ns.corporation.getConstants
+    ns.corporation.getDivision
     ns.corporation.getIndustryData
 
     // runtime
