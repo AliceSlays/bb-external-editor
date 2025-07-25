@@ -1,4 +1,4 @@
-import { fetchServers } from "../common/network-info"
+import { fetchServers } from "../demons/network-info-demon"
 import { IServerInfo } from "../common/common-types"
 import { processServer, any_changes } from "../demons/network-info-demon"
 
@@ -14,7 +14,8 @@ export async function main(ns: NS) {
         let current = processed
         if (any_changes(prev, current.concat(prev[0]))) {
             try {
-                ns.tryWritePort(11111, processed)
+              ns.clearPort(11111)
+                console.log(ns.tryWritePort(11111, processed))
             } catch (e) {
                 console.log(e)
             }

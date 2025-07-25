@@ -2,7 +2,6 @@
 import { ServerList, ServerOption, ServerOptionList } from '../dashboard/dashboard-common.tsx';
 import { fetchServerList } from '../dashboard/server-info.tsx';
 import { HackActionFiles } from '../hacking/hacking-common.tsx'
-
 export interface ScriptArgs {
   fileName: string,
   args: string[]
@@ -58,7 +57,7 @@ export class ScriptDeployer {
     const scriptRamCost: number = ns.getScriptRam(script.fileName, 'home');
     var serverRamFree: number = server.rammodifier ? (ns.getServerMaxRam(server.hostname) * server.rammodifier - ns.getServerUsedRam(server.hostname)) :
       (ns.getServerMaxRam(server.hostname) - ns.getServerUsedRam(server.hostname));
-    if (serverRamFree < 0){
+    if (serverRamFree < 0) {
       serverRamFree = 0
     }
     const threadsPossible: number = Math.floor(serverRamFree / scriptRamCost);
@@ -113,7 +112,7 @@ export async function main(ns: NS) {
     // {hostname:'pserv-6',rammodifier:1},{hostname:'pserv-5',rammodifier:1}
   ], { hacked: true })
   */
-  var scriptdeployer = new ScriptDeployer(ns, [], { purchased:true, home:true, hacked: true })
+  var scriptdeployer = new ScriptDeployer(ns, [], { purchased: true, home: true, hacked: true })
   var filename = 'hacking/hacking-server-share.tsx';
   var count = scriptdeployer.deployScriptBatch(ns, { fileName: filename, args: [] }, 9999999, false)
   console.log(`Deployed ${count} share threads!`)

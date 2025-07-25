@@ -53,6 +53,7 @@ export async function main(ns: NS) {
         let follow = servers.map(s => { return processServer(ns, s) })
         if (any_changes(current, follow)) {
             try {
+                port.clear()
                 port.tryWrite(follow)
             } catch (e) {
                 console.log(e)

@@ -1,7 +1,7 @@
 export async function main(ns: NS) {
   
   console.log(ns.heart.break())
-  /*
+  
   var name = 'Carlos'
   var info = ns.gang.getMemberInformation(name)
   var exp_str = info.str_exp
@@ -50,5 +50,5 @@ ns.formulas.gang.moneyGain
 ns.formulas.gang.respectGain
 ns.formulas.gang.wantedLevelGain
 ns.formulas.gang.wantedPenalty
-*/
+
 }
