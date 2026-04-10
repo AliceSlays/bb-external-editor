@@ -15,17 +15,23 @@ function readyToAscend1(ns: NS, member: GangMemberInfo, mult_gain_factor: number
   let def_points_gain = (member.def_asc_points + ns.formulas.gang.ascensionPointsGain(member.def_exp))
   let def_mult_gain_factor = ns.formulas.gang.ascensionMultiplier(def_points_gain) / member.def_asc_mult
   let condition4 = def_mult_gain_factor > mult_gain_factor
-  return condition1 || condition2 || condition3 || condition4
+  let hack_points_gain = (member.hack_asc_points + ns.formulas.gang.ascensionPointsGain(member.hack_exp))
+  let hack_mult_gain_factor = ns.formulas.gang.ascensionMultiplier(hack_points_gain) / member.hack_asc_mult
+  let condition5 = hack_mult_gain_factor > mult_gain_factor
+  let cha_points_gain = (member.cha_asc_points + ns.formulas.gang.ascensionPointsGain(member.cha_exp))
+  let cha_mult_gain_factor = ns.formulas.gang.ascensionMultiplier(cha_points_gain) / member.cha_asc_mult
+  let condition6 = cha_mult_gain_factor > mult_gain_factor
+  return condition1 || condition2 || condition3 || condition4 || condition5 || condition6
 }
 function readyToAscend2(ns: NS, member: GangMemberInfo, points_gain_total: number): boolean {
   let agi_points_gain = (ns.formulas.gang.ascensionPointsGain(member.agi_exp))
   let condition1 = agi_points_gain > points_gain_total
   let str_points_gain = (ns.formulas.gang.ascensionPointsGain(member.str_exp))
-  let condition2 = agi_points_gain > points_gain_total
+  let condition2 = str_points_gain > points_gain_total
   let dex_points_gain = (ns.formulas.gang.ascensionPointsGain(member.dex_exp))
-  let condition3 = agi_points_gain > points_gain_total
+  let condition3 = dex_points_gain > points_gain_total
   let def_points_gain = (ns.formulas.gang.ascensionPointsGain(member.def_exp))
-  let condition4 = agi_points_gain > points_gain_total
+  let condition4 = def_points_gain > points_gain_total
   return condition1 || condition2 || condition3 || condition4
 }
 
