@@ -1,4 +1,4 @@
-import { GangMemberInfo, GangGenInfo, GangTaskStats } from 'NetscriptDefinitions'
+//import { GangMemberInfo, GangGenInfo, GangTaskStats } from 'NetscriptDefinitions'
 
 
 
@@ -115,23 +115,29 @@ interface ITaskStatsEarnings {
 }
 
 enum EStatsBlock {
-  'hack', 'str', 'def', 'dex', 'agi', 'cha'
+  'hack' = 'hack',
+  'str' = 'str',
+  'def' = 'def',
+  'dex' = 'dex',
+  'agi' = 'agi',
+  'cha' = 'cha'
 }
 type TypeStatsBlock = keyof typeof EStatsBlock
 
+type stat_names = 'hack' | 'str' | 'def' | 'dex' | 'agi' | 'cha'
 function getStats(ns: NS, member: GangMemberInfo, task: GangTaskStats): ITaskStatsEarnings {
-  function getS(k: TypeStatsBlock) {
-    type TaskKey = keyof typeof task;
-    type MemberKey = keyof typeof member;
-    const weight = k + 'Weight' as TaskKey;
-    const asc_mult = k + '_asc_mult' as MemberKey;
-    const mult = k + '_mult' as MemberKey;
-    return (task[weight] / 96 * task.difficulty * member[asc_mult] * member[mult])
+  function getS(k: stat_names) {
+    return (task[k + 'Weight'] / 96 * task.difficulty * member[k + '_asc_mult'] * member[k + '_mult'])
   }
-  let stats: ITaskStatsEarnings;
-  for (let k in EStatsBlock) {
-    stats[k] = getS(k)
-  }
+  let stats: ITaskStatsEarnings = {
+    hack:getS('hack'),
+    str:getS('str'),
+    def:getS('def'),
+    dex:getS('dex'),
+    agi:getS('agi'),
+    cha:getS('cha')
+  };
+
   return stats
 }
 
@@ -170,8 +176,26 @@ interface IMemberTimeTo {
   ascentionCondition1: TTaskTimeToU
 }
 
-function readyToAscend(ns: NS, member: string): boolean {
-  return true
+function readyToAscend(ns: NS, member: GangMemberInfo, mult_gain_factor: number): boolean {
+  let agi_points_gain = (member.agi_asc_points + ns.formulas.gang.ascensionPointsGain(member.agi_exp))
+  let agi_mult_gain_factor = ns.formulas.gang.ascensionMultiplier(agi_points_gain) / member.agi_asc_mult
+  let condition1 = agi_mult_gain_factor > mult_gain_factor
+  let str_points_gain = (member.str_asc_points + ns.formulas.gang.ascensionPointsGain(member.str_exp))
+  let str_mult_gain_factor = ns.formulas.gang.ascensionMultiplier(str_points_gain) / member.str_asc_mult
+  let condition2 = str_mult_gain_factor > mult_gain_factor
+  let dex_points_gain = (member.dex_asc_points + ns.formulas.gang.ascensionPointsGain(member.dex_exp))
+  let dex_mult_gain_factor = ns.formulas.gang.ascensionMultiplier(dex_points_gain) / member.dex_asc_mult
+  let condition3 = dex_mult_gain_factor > mult_gain_factor
+  let def_points_gain = (member.def_asc_points + ns.formulas.gang.ascensionPointsGain(member.def_exp))
+  let def_mult_gain_factor = ns.formulas.gang.ascensionMultiplier(def_points_gain) / member.def_asc_mult
+  let condition4 = def_mult_gain_factor > mult_gain_factor
+  let hack_points_gain = (member.hack_asc_points + ns.formulas.gang.ascensionPointsGain(member.hack_exp))
+  let hack_mult_gain_factor = ns.formulas.gang.ascensionMultiplier(hack_points_gain) / member.hack_asc_mult
+  let condition5 = hack_mult_gain_factor > mult_gain_factor
+  let cha_points_gain = (member.cha_asc_points + ns.formulas.gang.ascensionPointsGain(member.cha_exp))
+  let cha_mult_gain_factor = ns.formulas.gang.ascensionMultiplier(cha_points_gain) / member.cha_asc_mult
+  let condition6 = cha_mult_gain_factor > mult_gain_factor
+  return condition1 || condition2 || condition3 || condition4 || condition5 || condition6
 }
 
 
@@ -228,6 +252,9 @@ function getTimeToNextRecruit(ns: NS, gang: GangGenInfo, member: GangMemberInfo,
   let respect_needed = gang.respectForNextRecruit - gang.respect
   let best_respect = Math.max(...tasks_info.map((t) => { return t.respect }))
   let index = tasks_info.findIndex((t) => t.money == best_respect)
+  if(index <0){
+    return undefined
+  }
   if (best_respect <= 0) {
     return undefined
   }
@@ -293,6 +320,19 @@ function getTimeTo(ns: NS, gang: GangGenInfo, member: GangMemberInfo, tasks_info
   }
 }
 
+
+function pickWeightedTask(ns: NS, gang: GangGenInfo, member: GangMemberInfo, tasks_info: ITaskEarnings[]): string {
+  let times = getTimeTo(ns, gang, member, tasks_info)
+
+  let min_val = times.ascentionCondition1
+  min_val = min_val < times.moneyCondition1 ? min_val : times.moneyCondition1
+  min_val = min_val < times.nextRecruit ? min_val : times.nextRecruit
+  min_val = min_val < times.wantedPenaltyCondition1 ? min_val : times.wantedPenaltyCondition1
+
+
+  return min_val.task
+}
+
 function decideTasks(ns: NS, gang: GangGenInfo, member: GangMemberInfo) {
   let tasks = ns.gang.getTaskNames()
   let tasks_info: ITaskEarnings[] = tasks.map((t, i) => {
@@ -300,16 +340,14 @@ function decideTasks(ns: NS, gang: GangGenInfo, member: GangMemberInfo) {
   })
 
   // ascention
+  //recruit
+  // set task
+  let task = pickWeightedTask(ns, gang, member, tasks_info)
+  return ns.gang.setMemberTask(member.name, task)
 
-
-
-  if (readyToAscend(ns, member.name)) {
-    ns.gang.ascendMember(member.name)
-  } else {
-
-  }
 }
 
+const names = ['Carlos', 'Nick', 'Jimmy', 'Tony', 'Marcus', 'Romeo', 'Alfredo', ' Tosh', 'Uruk', 'Dominic', 'River', 'Alice']
 // calc task every tw tick
 export async function main(ns: NS) {
   if (!ns.gang.inGang()) {
@@ -326,14 +364,21 @@ export async function main(ns: NS) {
   twCounter.resetTick()
   let tasks = ns.gang.getTaskNames()
   while (true) {
+    if (ns.gang.canRecruitMember()) {
+      ns.gang.recruitMember(names[ns.gang.getMemberNames().length])
+      continue
+    }
     // recruitment runs in parallel
     let members = ns.gang.getMemberNames().map((m, i) => { return ns.gang.getMemberInformation(m) })
     let gang = ns.gang.getGangInformation()
     // need resp? disc? power? money? stats? eq? territory?
     // collective action or individual?
-
     if (twCounter.getTick() == 0) {
       members.forEach((m, i) => {
+        if (readyToAscend(ns, m, 1.1)) {
+          ns.gang.ascendMember(m.name)
+        }
+        m = ns.gang.getMemberInformation(m.name)
         decideTasks(ns, gang, m)
       })
     } else if (twCounter.is_next_TW_update()) {
